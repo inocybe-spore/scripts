@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Copyright (c) 2013 The CoreOS Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+SCRIPT_ROOT=$(dirname $(readlink -f "$0"))
+# We have to simple-mindedly set GCLIENT_ROOT in case we're running from
+# au-generator.zip because common.sh will fail while auto-detect it.
+export GCLIENT_ROOT=$(readlink -f "${SCRIPT_ROOT}/../../")
+. "${SCRIPT_ROOT}/common.sh" || exit 1
+
+DEFINE_string board "amd64-usr" \
+    "Board type of the image"
+DEFINE_string payload "coreos_production_update.gz" \
+    "Path to the update payload"
+DEFINE_string version "${COREOS_VERSION_STRING}" \
+    "Version number of this build."
+DEFINE_string app_id "e96281a6-d1af-4bde-9a0a-97b76e56dc57" \
+    "CoreOS AppId in roller."
+
+DEFINE_string storage "s3://spore.updates" \
+    "AWS S3 Storage location to host the payload."
+
+FLAGS_HELPS="usage: $SCRIPTNAME [flags]
+
+Setting everything up for use\n
+
+1) Run 'aws configure' and use bucket s3://spore.updates\n
+2) Ensure rollerctl is installed in your path\n
+"
+
+# Parse flags
+FLAGS "$@" || exit 1
+eval set -- "${FLAGS_ARGV}"
+switch_to_strict_mode
+
+# Ensure S3 URL doesn't have a trailing /
+FLAGS_storage="${FLAGS_storage%%/}"
+
+S3_URL="${FLAGS_storage}/${FLAGS_board}/${FLAGS_version}/update.gz"
+HTTP_URL="http://${FLAGS_storage#s3://}.s3.amazonaws.com/${FLAGS_board}/${FLAGS_version}/update.gz"
+aws s3 cp "${FLAGS_payload}" "${S3_URL}"
+
+# Get the signed hashes
+# look into core_sign_update
+
+SHA1=
+SHA256=
+
+updateservicectl \
+        package create \
+        --app-id="${FLAGS_app_id}" \
+        --sha1="${SHA1}" \
+        --sha256="${SHA256}" \
+        --size="${SIZE}" \
+        --url="${HTTP_URL}" \
+	--version="${FLAGS_version}"
