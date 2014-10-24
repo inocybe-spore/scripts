@@ -45,8 +45,12 @@ aws s3 cp "${FLAGS_payload}" "${S3_URL}"
 # Get the signed hashes
 # look into core_sign_update
 
-SHA1=
-SHA256=
+python new.py
+
+SHA1=`jq '.sha1' < update.meta`
+SHA256=`jq '.sha256' < update.meta`
+SIZE=`jq '.size' < update.meta`
+
 
 updateservicectl \
         package create \
@@ -56,3 +60,5 @@ updateservicectl \
         --size="${SIZE}" \
         --url="${HTTP_URL}" \
 	--version="${FLAGS_version}"
+
+rm update.meta
