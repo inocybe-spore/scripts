@@ -61,7 +61,7 @@ echo "url: ${HTTP_URL}"
 
 ../pfm-management-client/bin/updateservicectl \
         package create \
-        --app-id="${FLAGS_app_id}" \
+        --app-id="{${FLAGS_app_id}}" \
         --sha1="${SHA1}" \
         --sha256="${SHA256}" \
         --size="${SIZE}" \
