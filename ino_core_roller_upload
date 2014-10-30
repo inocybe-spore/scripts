@@ -54,8 +54,12 @@ SHA1=`jq '.sha1' < ${UPDATE_META}`
 SHA256=`jq '.sha256' < ${UPDATE_META}`
 SIZE=`jq '.size' < ${UPDATE_META}`
 
+echo "SHA1 : ${SHA1}"
+echo "SHA256 : ${SHA256}"
+echo "Size : ${SIZE}"
+echo "url: ${HTTP_URL}"
 
-updateservicectl \
+../pfm-management-client/bin/updateservicectl \
         package create \
         --app-id="${FLAGS_app_id}" \
         --sha1="${SHA1}" \
