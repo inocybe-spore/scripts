@@ -146,6 +146,9 @@ elif [[ -s /etc/shared_user_passwd.txt ]]; then
 users:
   - name: inocybe
     passwd: $(</etc/shared_user_passwd.txt)
+    groups:
+      - sudo
+      - docker
 EOF
 fi
 
