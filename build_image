@@ -144,7 +144,7 @@ elif [[ -s /etc/shared_user_passwd.txt ]]; then
 #cloud-config
 
 users:
-  - name: core
+  - name: inocybe
     passwd: $(</etc/shared_user_passwd.txt)
 EOF
 fi
@@ -218,5 +218,3 @@ if [[ "${DEV_IMAGE}" -eq 1 ]]; then
 fi
 
 command_completed
-
-
