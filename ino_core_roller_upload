@@ -12,7 +12,7 @@ export GCLIENT_ROOT=$(readlink -f "${SCRIPT_ROOT}/../../")
 
 DEFINE_string board "amd64-usr" \
     "Board type of the image"
-DEFINE_string image_dir "../build/images/amd64-usr/latest/" \
+DEFINE_string image_dir "~/trunk/src/build/images/amd64-usr/latest/" \
     "Path to the image"
 DEFINE_string version "${COREOS_VERSION_STRING}" \
     "Version number of this build."
