@@ -36,6 +36,7 @@ eval set -- "${FLAGS_ARGV}"
 switch_to_strict_mode
 
 # Generate payload and metadata
+echo ${FLAGS_image_dir}
 ./ino_lib/inogenerate_update_hash.py -d ${FLAGS_image_dir}
 
 # Ensure S3 URL doesn't have a trailing /
@@ -71,7 +72,7 @@ echo "SHA256 : ${SHA256}" >> update_build.txt
 echo "Size : ${SIZE}" >> update_build.txt
 echo "url: ${HTTP_URL}" >> update_build.txt
 
-../pfm-management-client/bin/updateservicectl \
+updateservicectl \
         package create \
         --app-id="{${FLAGS_app_id}}" \
         --sha1="${SHA1}" \
