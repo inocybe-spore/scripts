@@ -42,7 +42,7 @@ echo ${FLAGS_image_dir}
 # Ensure S3 URL doesn't have a trailing /
 FLAGS_storage="${FLAGS_storage%%/}"
 
-if [[ FLAGS_version =~ "+" ]]; then
+if [[ FLAGS_version =~ .*+.* ]]; then
     VERSION_STRING=`echo $FLAGS_version | sed -r 's/[\+]/-/g'`
 else
     VERSION_STRING=${FLAGS_version}
