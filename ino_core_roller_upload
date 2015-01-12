@@ -57,7 +57,11 @@ aws s3 cp "${FLAGS_image_dir}/payload/update.gz" "${S3_URL}"
 UPDATE_META="${FLAGS_image_dir}/payload/update.meta"
 
 SHA1=`jq '.sha1' < ${UPDATE_META}`
+SHA1=${SHA1#'"'}
+SHA1=${SHA1%'"'}
 SHA256=`jq '.sha256' < ${UPDATE_META}`
+SHA256=${SHA256#'"'}
+SHA256=${SHA256%'"'}
 SIZE=`jq '.size' < ${UPDATE_META}`
 
 echo "SHA1 : ${SHA1}"
