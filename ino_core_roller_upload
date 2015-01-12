@@ -12,7 +12,7 @@ export GCLIENT_ROOT=$(readlink -f "${SCRIPT_ROOT}/../../")
 
 DEFINE_string board "amd64-usr" \
     "Board type of the image"
-DEFINE_string image_dir "../build/images/amd64-usr/latest/" \
+DEFINE_string image_dir "~/trunk/src/build/images/amd64-usr/latest/" \
     "Path to the image"
 DEFINE_string version "${COREOS_VERSION_STRING}" \
     "Version number of this build."
@@ -36,12 +36,13 @@ eval set -- "${FLAGS_ARGV}"
 switch_to_strict_mode
 
 # Generate payload and metadata
+echo ${FLAGS_image_dir}
 ./ino_lib/inogenerate_update_hash.py -d ${FLAGS_image_dir}
 
 # Ensure S3 URL doesn't have a trailing /
 FLAGS_storage="${FLAGS_storage%%/}"
 
-if [[ FLAGS_version =~ "+" ]]; then
+if [[ FLAGS_version =~ .*+.* ]]; then
     VERSION_STRING=`echo $FLAGS_version | sed -r 's/[\+]/-/g'`
 else
     VERSION_STRING=${FLAGS_version}
@@ -69,7 +70,13 @@ echo "SHA256 : ${SHA256}"
 echo "Size : ${SIZE}"
 echo "url: ${HTTP_URL}"
 
-../pfm-management-client/bin/updateservicectl \
+echo "Version: ${VERSION_STRING}" > update_build.txt
+echo "SHA1 : ${SHA1}" >> update_build.txt
+echo "SHA256 : ${SHA256}" >> update_build.txt
+echo "Size : ${SIZE}" >> update_build.txt
+echo "url: ${HTTP_URL}" >> update_build.txt
+
+updateservicectl \
         package create \
         --app-id="{${FLAGS_app_id}}" \
         --sha1="${SHA1}" \
